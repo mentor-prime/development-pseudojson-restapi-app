@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 import os
@@ -10,6 +10,10 @@ mongo_uri = "mongodb+srv://admin:admin@cluster0.6px5a.mongodb.net/"
 client = MongoClient(mongo_uri)
 db = client.postman01
 products = db.products
+
+@app.route('/')
+def home():
+    return render_template('index5.html')
 
 @app.route('/products', methods=['GET'])
 def get_products():

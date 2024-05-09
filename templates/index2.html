@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PseudoJSON - API Landing Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 70px; /* Increased padding to ensure content is not hidden by the header */
+        }
+        .container {
+            max-width: 800px;
+        }
+        .endpoint {
+            background: #f9f9f9;
+            border-left: 5px solid #5cb85c;
+            margin-bottom: 10px;
+            overflow: hidden; /* Ensures the dropdown animation is contained */
+            transition: max-height 0.4s ease-in-out; /* Smooth transition for dropdown */
+        }
+        .endpoint-content {
+            padding: 0 20px 20px; /* Padding inside the dropdown */
+        }
+        .endpoint-header {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer; /* Indicates the element is clickable */
+            user-select: none; /* Prevents text selection */
+        }
+        .fixed-top {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: white;
+            z-index: 1000;
+            border-bottom: 1px solid #ccc;
+            padding: 10px 20px; /* Padding for the header */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Adds shadow to the header for better visibility */
+        }
+        .bold {
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var coll = document.getElementsByClassName("endpoint-header");
+            for (var i = 0; i < coll.length; i++) {
+                coll[i].addEventListener("click", function() {
+                    this.classList.toggle("active");
+                    var content = this.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="fixed-top">
+        <h1><b>PseudoJson</b></h1>
+    </div>
+    <div class="container">
+        <h3>Product API</h3>
+        <p>This is a simple API for managing products in a MongoDB database.</p>
+
+        <div class="endpoint">
+            <div class="endpoint-header">GET /products</div>
+            <div class="endpoint-content">
+                <p>Returns a list of all products.</p>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header">GET /products/{id}</div>
+            <div class="endpoint-content">
+                <p>Returns a single product by its ID.</p>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header">POST /products</div>
+            <div class="endpoint-content">
+                <p>Adds a new product. Requires product data in JSON format.</p>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header">PUT /products/{id}</div>
+            <div class="endpoint-content">
+                <p>Updates an existing product by its ID. Requires updated data in JSON format.</p>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header">DELETE /products/{id}</div>
+            <div class="endpoint-content">
+                <p>Deletes a product by its ID.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
