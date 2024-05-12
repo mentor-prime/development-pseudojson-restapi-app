@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>PseudoJSON</title>
+      <style>
+         * {
+         box-sizing: border-box;
+         margin: 0;
+         padding: 0;
+         }
+         body {
+         font-family: 'Roboto', sans-serif;
+         line-height: 1.6;
+         background-color: #f0f2f7;
+         }
+         <!--    header {-->
+         <!--      background-color: #F1D3F3;-->
+         <!--      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);-->
+         <!--      padding: 0px 0;-->
+         <!--      display: flex;-->
+         <!--      justify-content: space-between;-->
+         <!--      align-items: center;-->
+         <!--      position: fixed;-->
+         <!--      width: 100%;-->
+         <!--      top: 0;-->
+         <!--      z-index: 1000;-->
+         <!--    }-->
+         header {
+         background-image: linear-gradient(135deg, #6ec1e4, #6658d3); /* Applying the gradient */
+         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+         padding: 0px 0;
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         position: fixed;
+         width: 100%;
+         top: 0;
+         z-index: 1000;
+         }
+         .header-title {
+         display: flex;
+         align-items: center;
+         padding-left: 80px;
+         }
+         .header-title h2 {
+         font-size: 2.5rem;
+         color: #333;
+         }
+         .header-nav {
+         display: flex;
+         align-items: center;
+         padding-right: 20px;
+         }
+         .header-nav a {
+         color: #98A4AF;
+         text-decoration: none;
+         margin-left: 20px;
+         font-size: 1rem;
+         padding: 8px 16px;
+         border: 2px solid transparent;
+         border-radius: 8px;
+         transition: all 0.2s ease-in-out;
+         }
+         .header-nav a:hover {
+         border-color: #007bff;
+         background-color: #98A4AF;
+         }
+         .content {
+         max-width: 1200px;
+         margin: 100px auto 20px auto; /* adjusted top margin to account for fixed header */
+         padding: 20px;
+         background-color: #ffffff;
+         box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+         border-radius: 10px;
+         }
+         h2 {
+         font-size: 2rem;
+         color: #333;
+         margin-top: 1rem;
+         }
+         pre {
+         background-color: #CBD7E2;
+         padding: 15px;
+         border-radius: 10px;
+         margin-top: 1rem;
+         overflow-x: auto;
+         }
+         code {
+         font-family: 'Courier New', Courier, monospace;
+         white-space: pre-wrap;
+         font-size: 0.9rem;
+         }
+         table {
+         width: 100%;
+         border-collapse: collapse;
+         border: 2px solid #889097;
+         }
+         th, td {
+         padding: 0.25rem;
+         border: 1px solid #dee2e6;
+         }
+         th {
+         background-color: #f8f9fa;
+         font-weight: 500;
+         }
+         tr:nth-child(even) {
+         background-color: #f2f2f2;
+         }
+         tr:hover {
+         background-color: #e9ecef;
+         }
+         .note {
+         background-color: #e9ecef;
+         padding: 1rem;
+         border-radius: 10px;
+         margin-top: 2rem;
+         margin-bottom: 2rem;
+         }
+         .emoji {
+         font-size: 1.5rem;
+         vertical-align: middle;
+         margin-right: 0.5rem;
+         }
+         .endpoint {
+         background: #f9f9f9;
+         border-left: 5px solid #5cb85c;
+         padding: 10px 20px;
+         margin-bottom: 10px;
+         }
+      </style>
+   </head>
+   <body>
+      <header>
+         <div class="header-title">
+            <!--<img src="https://dummyjson.com/favicon.ico" alt="DummyJSON" width="48" height="48">-->
+            <h2>Pseudo{JSON}</h2>
+         </div>
+         <div class="header-nav">
+            <a href="https://github.com/Ovi/DummyJSON">GitHub</a>
+            <a href="/docs/products/">Docs</a>
+         </div>
+      </header>
+      <div class="content">
+         <h3>Got tired of fake dataset?</h3>
+         <p>PseudoJson provides a variety of REST endpoints that deliver JSON data, allowing you to focus on front-end development using your preferred frameworks and libraries without the need to develop a backend.</p>
+         <h4><br>Example Code</h4>
+         <pre><code>fetch('https://dummyjson.com/products/1')
+.then(res =&gt; res.json())
+.then(json =&gt; console.log(json))</code></pre>
+         <pre><code>{
+  "message": "Hello, World!"
+}</code></pre>
+         <!--    <p>Yay! 😍</p>-->
+         <h4><br>Resources</h4>
+         <p>PseudoJson comes with different sets of common resources:</p>
+         <div class="note">
+            <p>Products endpoints:</p>
+            <table>
+               <tbody>
+                  <div class="endpoint">
+                     <h4>GET <a href="/products">/products</a></h4>
+                     <p>Returns a list of all products.</p>
+                  </div>
+                  <div class="endpoint">
+                     <h4>GET <a href="/products/1">/products/1</a></h4>
+                     <p>Fetch product with id 1.</p>
+                  </div>
+                  <div class="endpoint">
+                     <h4>GET <a href="/products/2">/products/2</a></h4>
+                     <p>Fetch product with id 2.</p>
+                  </div>
+                  <div class="endpoint">
+                     <h4>GET <a href="/products/category/smartphones">/products/category/smartphones</a></h4>
+                     <p>Fetch products which has the category smartphones.</p>
+                  </div>
+                  <div class="endpoint">
+                     <h4>POST <a href="/products">/products</a></h4>
+                     <p>Adds a new product to the database. Requires a JSON payload with product details.</p>
+                    <p>Body:</p>
+                     <pre><code>{
+    "brand": "Apple",
+    "category": "smartphones",
+    "description": "An apple mobile which is nothing like apple",
+    "discountPercentage": 12.96,
+    "id": 31,
+    "images": [
+        "https://unsplash.com/photos/a-close-up-of-a-person-holding-a-cell-phone-KX_7S9bXYjY"
+    ],
+    "price": 1449,
+    "rating": 12.69,
+    "stock": 188,
+    "thumbnail": "https://unsplash.com/photos/a-close-up-of-a-person-holding-a-cell-phone-KX_7S9bXYjY",
+    "title": "iPhone 15 pro"
+}</code></pre>
+                     <p>Headers:</p>
+                     <pre>Content-Type: application/json</pre>
+                     <p><b>Response Examples:</b></p>
+                     <p>Success - 201 Created:</p>
+                     <pre><code>{
+  "_id": "mongodb_generated_id",
+  "id": "unique_product_id",
+  "title": "Product Title",
+  "price": 100,
+  "category": "Category Name",
+  // Additional fields...
+}</code></pre>
+                     <p>Error - 400 Bad Request (Missing ID):</p>
+                     <pre><code>{
+  "error": "ID is required"
+}</code></pre>
+                     <p>Error - 409 Conflict (ID already exists):</p>
+                     <pre><code>{
+  "error": "Product with this ID already exists"
+}</code></pre>
+                  </div>
+               </tbody>
+            </table>
+            <p>**Note:** by default you will get 30 results and the total count, you can pass "skip" & "limit" query string to get more results. For example: <a href="/posts?skip=5&limit=10">/posts?skip=5&limit=10</a></p>
+         </div>
+         <div class="endpoint">
+            <p>Categories endpoints:</p>
+            <table>
+               <tbody>
+                  <tr>
+                     <td><a href="/products">/products</a></td>
+                     <td>100 products</td>
+                  </tr>
+                  <tr>
+                     <td><a href="/carts">/carts</a></td>
+                     <td>20 carts</td>
+                  </tr>
+                  <tr>
+                     <td><a href="/users">/users</a></td>
+                     <td>100 users</td>
+                  </tr>
+                  <tr>
+                     <td><a href="/posts">/posts</a></td>
+                     <td>150 posts</td>
+                  </tr>
+                  <tr>
+                     <td><a href="/comments">/comments</a></td>
+                     <td>340 comments</td>
+                  </tr>
+                  <tr>
+                     <td><a href="/docs/image">/image</a></td>
+                     <td>Generate images on the fly</td>
+                  </tr>
+                  <tr>
+                     <td><a href="/quotes">/quotes</a></td>
+                     <td>1400+ quotes</td>
+                  </tr>
+                  <tr>
+                     <td><a href="/recipes">/recipes</a></td>
+                     <td>50 recipes</td>
+                  </tr>
+                  <tr>
+                     <td><a href="/todos">/todos</a></td>
+                     <td>150 todos</td>
+                  </tr>
+                  <tr>
+                     <td><a href="/docs/http">/http</a></td>
+                     <td>Mock HTTP Code Response</td>
+                  </tr>
+                  <tr>
+                     <td><a>/auth</a></td>
+                     <td>to get auth token</td>
+                  </tr>
+               </tbody>
+            </table>
+            <p>**Note:** by default you will get 30 results and the total count, you can pass "skip" & "limit" query string to get more results. For example: <a href="/posts?skip=5&limit=10">/posts?skip=5&limit=10</a></p>
+         </div>
+      </div>
+   </body>
+</html>

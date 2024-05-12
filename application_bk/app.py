@@ -9,22 +9,23 @@ app = Flask(__name__)
 mongo_uri = "mongodb+srv://admin:admin@cluster0.6px5a.mongodb.net/"
 client = MongoClient(mongo_uri)
 db = client.postman01
+#products = db.products
 products = db.products02
 
 @app.route('/')
 def home():
-    return render_template('index8.html')
+    return render_template('index5.html')
 
 @app.route('/products', methods=['GET'])
 def get_products():
     all_products = list(products.find())
     for product in all_products:
-        product['_id'] = str(product['_id'])  # Optional: Convert MongoDB's _id to string if needed for client-side handling
+        product['_id'] = str(product['_id'])
     return jsonify(all_products)
 
-@app.route('/products/<int:id>', methods=['GET'])
+@app.route('/products/<id>', methods=['GET'])
 def get_product(id):
-    product = products.find_one({'id': id})
+    product = products.find_one({'_id': ObjectId(id)})
     if product:
         product['_id'] = str(product['_id'])
         return jsonify(product)
@@ -34,38 +35,28 @@ def get_product(id):
 @app.route('/products', methods=['POST'])
 def add_product():
     product = request.json
-    if not product.get('id'):
-        return jsonify({"error": "ID is required"}), 400
-    if products.find_one({'id': product['id']}):
-        return jsonify({"error": "Product with this ID already exists"}), 409
     result = products.insert_one(product)
     product['_id'] = str(result.inserted_id)
     return jsonify(product), 201
 
-@app.route('/products/<int:id>', methods=['PUT'])
+@app.route('/products/<id>', methods=['PUT'])
 def update_product(id):
     update_data = request.json
-    result = products.update_one({'id': id}, {'$set': update_data})
+    result = products.update_one({'_id': ObjectId(id)}, {'$set': update_data})
     if result.modified_count:
-        return jsonify({"id": id})
+        return jsonify({"_id": id})
     else:
         return jsonify({"error": "Product not updated"}), 404
 
-@app.route('/products/<int:id>', methods=['DELETE'])
+@app.route('/products/<id>', methods=['DELETE'])
 def delete_product(id):
-    result = products.delete_one({'id': id})
+    result = products.delete_one({'_id': ObjectId(id)})
     if result.deleted_count:
-        return jsonify({"id": id})
+        return jsonify({"_id": id})
     else:
         return jsonify({"error": "Product not found"}), 404
-@app.route('/products/category/<category_name>', methods=['GET'])
-def get_products_by_category(category_name):
-    category_products = products.find({'category': category_name})
-    result = [product for product in category_products if product['category'].lower() == category_name.lower()]
-    for product in result:
-        product['_id'] = str(product['_id'])
-    return jsonify({'products': result, 'total': len(result), 'category': category_name})
-
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+    ######
