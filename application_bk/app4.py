@@ -12,11 +12,9 @@ client = MongoClient(mongo_uri)
 db = client.postman01
 products = db.products02
 
-
 @app.route('/')
 def home():
     return render_template('index8.html')
-
 
 @app.route('/dashboard')
 def dashboard():
@@ -24,28 +22,12 @@ def dashboard():
         return redirect(url_for('login'))  # Redirect to login if not logged in
     return render_template('dashboard.html')  # Render the dashboard page
 
-
-# @app.route('/products', methods=['GET'])
-# def get_products():
-#     skip = int(request.args.get('skip', 0))
-#     limit = int(request.args.get('limit', 30))
-#
-#     all_products = list(products.find().skip(skip).limit(limit))
-#     for product in all_products:
-#         product['_id'] = str(product['_id'])
-#     total_count = products.count_documents({})
-#     return jsonify({"products": all_products, "total": total_count})
-
 @app.route('/products', methods=['GET'])
 def get_products():
-    skip = int(request.args.get('skip', 0))  # Default to 0 if not provided
-    limit = int(request.args.get('limit', 30))  # Default to 30 if not provided
-
-    all_products = list(products.find().sort("id", 1).skip(skip).limit(limit))  # Sort by 'id' in ascending order
+    all_products = list(products.find())
     for product in all_products:
         product['_id'] = str(product['_id'])
-    total_count = products.count_documents({})
-    return jsonify({"products": all_products, "total": total_count})
+    return jsonify(all_products)
 
 @app.route('/products/<int:id>', methods=['GET'])
 def get_product(id):
@@ -55,7 +37,6 @@ def get_product(id):
         return jsonify(product)
     else:
         return jsonify({"error": "Product not found"}), 404
-
 
 @app.route('/products', methods=['POST'])
 def add_product():
@@ -68,7 +49,6 @@ def add_product():
     product['_id'] = str(result.inserted_id)
     return jsonify(product), 201
 
-
 @app.route('/products/<int:id>', methods=['PUT'])
 def update_product(id):
     update_data = request.json
@@ -78,7 +58,6 @@ def update_product(id):
     else:
         return jsonify({"error": "Product not updated"}), 404
 
-
 @app.route('/products/<int:id>', methods=['DELETE'])
 def delete_product(id):
     result = products.delete_one({'id': id})
@@ -87,40 +66,30 @@ def delete_product(id):
     else:
         return jsonify({"error": "Product not found"}), 404
 
-
 @app.route('/products/category/<category_name>', methods=['GET'])
 def get_products_by_category(category_name):
-    skip = int(request.args.get('skip', 0))
-    limit = int(request.args.get('limit', 30))
-
-    category_products = products.find({'category': {'$regex': category_name, '$options': 'i'}}).skip(skip).limit(limit)
-    result = []
-    for product in category_products:
+    category_products = products.find({'category': category_name})
+    result = [product for product in category_products if product['category'].lower() == category_name.lower()]
+    for product in result:
         product['_id'] = str(product['_id'])
-        result.append(product)
-
-    total_count = products.count_documents({'category': {'$regex': category_name, '$options': 'i'}})
-    return jsonify({'products': result, 'total': total_count, 'category': category_name})
-
+    return jsonify({'products': result, 'total': len(result), 'category': category_name})
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if username == 'admin' and password == 'admin':
+        if username == 'admin' and password == 'admin@postman123!':
             session['logged_in'] = True
             return redirect(url_for('dashboard'))  # Redirect to the dashboard page after login
         else:
             return 'Invalid credentials', 401
     return render_template('login.html')  # Display the login page for GET requests
 
-
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
     return redirect(url_for('home'))
-
 
 if __name__ == '__main__':
     app.run(debug=True)
