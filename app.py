@@ -15,7 +15,7 @@ products = db.products02
 
 @app.route('/')
 def home():
-    return render_template('index8.html')
+    return render_template('index9.html')
 
 
 @app.route('/dashboard')
@@ -24,22 +24,10 @@ def dashboard():
         return redirect(url_for('login'))  # Redirect to login if not logged in
     return render_template('dashboard.html')  # Render the dashboard page
 
-
-# @app.route('/products', methods=['GET'])
-# def get_products():
-#     skip = int(request.args.get('skip', 0))
-#     limit = int(request.args.get('limit', 30))
-#
-#     all_products = list(products.find().skip(skip).limit(limit))
-#     for product in all_products:
-#         product['_id'] = str(product['_id'])
-#     total_count = products.count_documents({})
-#     return jsonify({"products": all_products, "total": total_count})
-
 @app.route('/products', methods=['GET'])
 def get_products():
     skip = int(request.args.get('skip', 0))  # Default to 0 if not provided
-    limit = int(request.args.get('limit', 30))  # Default to 30 if not provided
+    limit = int(request.args.get('limit', 100))  # Default to 30 if not provided
 
     all_products = list(products.find().sort("id", 1).skip(skip).limit(limit))  # Sort by 'id' in ascending order
     for product in all_products:
@@ -91,7 +79,7 @@ def delete_product(id):
 @app.route('/products/category/<category_name>', methods=['GET'])
 def get_products_by_category(category_name):
     skip = int(request.args.get('skip', 0))
-    limit = int(request.args.get('limit', 30))
+    limit = int(request.args.get('limit', 100))
 
     category_products = products.find({'category': {'$regex': category_name, '$options': 'i'}}).skip(skip).limit(limit)
     result = []
