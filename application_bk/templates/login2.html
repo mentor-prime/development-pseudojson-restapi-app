@@ -32,41 +32,10 @@
             background-color: #0056b3; /* Darker blue for the primary button */
             border-color: #004080; /* Even darker blue for the button border */
     </style>
-    <script>
-        function login(event) {
-            event.preventDefault();
-            const formData = new FormData(document.getElementById('login-form'));
-
-            fetch('/login', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert(`Error: ${data.error}`);
-                } else {
-                    console.log('Token:', data.token);  // Log the token to the console
-                    alert(`Login successful! JWT Token: ${data.token}`);
-                    // Store the token in local storage
-                    localStorage.setItem('token', data.token);
-
-                    // Redirect to the dashboard after a delay
-                    setTimeout(() => {
-                        window.location.href = '/dashboard';
-                    }, 2000);  // 2-second delay for inspection
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred during login.');
-            });
-        }
-    </script>
 </head>
 <body>
     <div class="container">
-        <form id="login-form" class="form-signin" onsubmit="login(event);">
+        <form class="form-signin" method="POST" action="/login">
             <h2 class="form-signin-heading">Login</h2>
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>

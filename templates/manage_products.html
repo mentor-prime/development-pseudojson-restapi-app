@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Products</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            background-color: #f0f2f7;
+            padding-top: 20px;
+        }
+        header {
+            background-image: linear-gradient(135deg, #6ec1e4, #6658d3); /* Applying the gradient */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            padding-left: 80px;
+        }
+        .header-title h2 {
+            font-size: 2.5rem;
+            color: #333;
+        }
+        .header-nav {
+            display: flex;
+            align-items: center;
+            padding-right: 20px;
+        }
+        .header-nav a, .header-nav button {
+            color: #98A4AF;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 1rem;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            transition: all 0.2s ease-in-out;
+            background-color: transparent;
+            cursor: pointer;
+        }
+        .header-nav a:hover, .header-nav button:hover {
+            border-color: #007bff;
+            background-color: #98A4AF;
+        }
+        .container {
+            max-width: 800px;
+            margin: 100px auto 20px auto; /* adjusted top margin to account for fixed header */
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        h2 {
+            font-size: 2rem;
+            color: #333;
+            margin-top: 1rem;
+        }
+        footer {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+        }
+        .section-divider {
+            margin: 2rem 0;
+            border-bottom: 2px solid #ccc;
+        }
+        .collapse-section {
+            cursor: pointer;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script>
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.classList.toggle('d-none');
+        }
+
+        function deleteProduct() {
+            const token = document.getElementById('bearer_token_delete').value.trim();
+            if (!token) {
+                alert("Bearer token is required");
+                return;
+            }
+
+            const productId = parseInt(document.getElementById('product_id_delete').value.trim(), 10);
+            if (!productId) {
+                alert("Product ID is required");
+                return;
+            }
+
+            fetch(`/products/${productId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('response_delete').innerText = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                document.getElementById('response_delete').innerText = 'Error: ' + error.message;
+            });
+        }
+
+        function addProduct() {
+            const token = document.getElementById('bearer_token_add').value.trim();
+            if (!token) {
+                alert("Bearer token is required");
+                return;
+            }
+
+            const product = {
+                id: parseInt(document.getElementById('product_id_add').value.trim(), 10),
+                title: document.getElementById('product_title').value.trim(),
+                price: parseFloat(document.getElementById('product_price').value.trim()),
+                category: document.getElementById('product_category').value.trim(),
+                description: document.getElementById('product_description').value.trim(),
+                stock: parseInt(document.getElementById('product_stock').value.trim(), 10),
+                image: document.getElementById('product_image').value.trim()
+            };
+
+            fetch('/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(product)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('response_add').innerText = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                document.getElementById('response_add').innerText = 'Error: ' + error.message;
+            });
+        }
+
+        function updateProduct() {
+            const token = document.getElementById('bearer_token_update').value.trim();
+            if (!token) {
+                alert("Bearer token is required");
+                return;
+            }
+
+            const productId = parseInt(document.getElementById('product_id_update').value.trim(), 10);
+            const product = {
+                title: document.getElementById('product_title_update').value.trim(),
+                price: parseFloat(document.getElementById('product_price_update').value.trim()),
+                category: document.getElementById('product_category_update').value.trim(),
+                description: document.getElementById('product_description_update').value.trim(),
+                stock: parseInt(document.getElementById('product_stock_update').value.trim(), 10),
+                image: document.getElementById('product_image_update').value.trim()
+            };
+
+            fetch(`/products/${productId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(product)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('response_update').innerText = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                document.getElementById('response_update').innerText = 'Error: ' + error.message;
+            });
+        }
+
+        function patchProduct() {
+            const token = document.getElementById('bearer_token_patch').value.trim();
+            if (!token) {
+                alert("Bearer token is required");
+                return;
+            }
+
+            const productId = parseInt(document.getElementById('product_id_patch').value.trim(), 10);
+            const product = {
+                price: parseFloat(document.getElementById('product_price_patch').value.trim())
+            };
+
+            fetch(`/products/${productId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(product)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('response_patch').innerText = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                document.getElementById('response_patch').innerText = 'Error: ' + error.message;
+            });
+        }
+
+        function copyToken() {
+            const tokenElement = document.getElementById('token');
+            const token = tokenElement.innerText;
+            navigator.clipboard.writeText(token).then(() => {
+                alert('Token copied to clipboard');
+            }, (err) => {
+                console.error('Failed to copy token: ', err);
+            });
+        }
+
+        function logout() {
+            fetch('/logout', {
+                method: 'GET'
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/';
+                } else {
+                    alert('Failed to logout');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during logout.');
+            });
+        }
+
+        function navigateToDashboard() {
+            window.location.href = '/dashboard';
+        }
+
+        function checkToken() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                fetch('/api/check_token', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Session expired, please log in again.');
+                        localStorage.removeItem('token');
+                        window.location.href = '/login';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        }
+
+        // Call checkToken() periodically or on certain user actions
+        setInterval(checkToken, 60000);  // Check every 60 seconds
+    </script>
+</head>
+<body>
+    <header>
+        <div class="header-title">
+            <h2>Pseudo{JSON}</h2>
+        </div>
+        <div class="header-nav">
+            <button onclick="navigateToDashboard()">Dashboard</button>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </header>
+    <div class="container">
+        <div class="collapse-section" onclick="toggleSection('add-product')">Add New Product</div>
+        <section id="add-product" class="d-none">
+            <form id="add-product-form">
+                <label for="bearer_token_add">Bearer Token:</label>
+                <input type="text" id="bearer_token_add" name="bearer_token" class="form-control" required>
+                <label for="product_id_add">Product ID:</label>
+                <input type="number" id="product_id_add" name="product_id" class="form-control" required>
+                <label for="product_title">Product Title:</label>
+                <input type="text" id="product_title" name="product_title" class="form-control" required>
+                <label for="product_price">Product Price:</label>
+                <input type="number" id="product_price" name="product_price" class="form-control" required>
+                <label for="product_category">Product Category:</label>
+                <input type="text" id="product_category" name="product_category" class="form-control" required>
+                <label for="product_description">Product Description:</label>
+                <textarea id="product_description" name="product_description" class="form-control" required></textarea>
+                <label for="product_stock">Product Stock:</label>
+                <input type="number" id="product_stock" name="product_stock" class="form-control" required>
+                <label for="product_image">Product Image URL:</label>
+                <input type="text" id="product_image" name="product_image" class="form-control" required>
+                <button type="button" onclick="addProduct()" class="btn btn-primary mt-3">Add Product</button>
+            </form>
+            <p id="response_add" class="mt-3"></p>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <div class="collapse-section" onclick="toggleSection('delete-product')">Delete Product</div>
+        <section id="delete-product" class="d-none">
+            <form id="delete-product-form">
+                <label for="bearer_token_delete">Bearer Token:</label>
+                <input type="text" id="bearer_token_delete" name="bearer_token" class="form-control" required>
+                <label for="product_id_delete">Product ID:</label>
+                <input type="number" id="product_id_delete" name="product_id" class="form-control" required>
+                <button type="button" onclick="deleteProduct()" class="btn btn-primary mt-3">Delete Product</button>
+            </form>
+            <p id="response_delete" class="mt-3"></p>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <div class="collapse-section" onclick="toggleSection('update-product')">Update Product (PUT)</div>
+        <section id="update-product" class="d-none">
+            <form id="update-product-form">
+                <label for="bearer_token_update">Bearer Token:</label>
+                <input type="text" id="bearer_token_update" name="bearer_token" class="form-control" required>
+                <label for="product_id_update">Product ID:</label>
+                <input type="number" id="product_id_update" name="product_id" class="form-control" required>
+                <label for="product_title_update">Product Title:</label>
+                <input type="text" id="product_title_update" name="product_title" class="form-control" required>
+                <label for="product_price_update">Product Price:</label>
+                <input type="number" id="product_price_update" name="product_price" class="form-control" required>
+                <label for="product_category_update">Product Category:</label>
+                <input type="text" id="product_category_update" name="product_category" class="form-control" required>
+                <label for="product_description_update">Product Description:</label>
+                <textarea id="product_description_update" name="product_description" class="form-control" required></textarea>
+                <label for="product_stock_update">Product Stock:</label>
+                <input type="number" id="product_stock_update" name="product_stock" class="form-control" required>
+                <label for="product_image_update">Product Image URL:</label>
+                <input type="text" id="product_image_update" name="product_image" class="form-control" required>
+                <button type="button" onclick="updateProduct()" class="btn btn-primary mt-3">Update Product</button>
+            </form>
+            <p id="response_update" class="mt-3"></p>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <div class="collapse-section" onclick="toggleSection('patch-product')">Patch Product</div>
+        <section id="patch-product" class="d-none">
+            <form id="patch-product-form">
+                <label for="bearer_token_patch">Bearer Token:</label>
+                <input type="text" id="bearer_token_patch" name="bearer_token" class="form-control" required>
+                <label for="product_id_patch">Product ID:</label>
+                <input type="number" id="product_id_patch" name="product_id" class="form-control" required>
+                <label for="product_price_patch">Product Price:</label>
+                <input type="number" id="product_price_patch" name="product_price" class="form-control" required>
+                <button type="button" onclick="patchProduct()" class="btn btn-primary mt-3">Patch Product</button>
+            </form>
+            <p id="response_patch" class="mt-3"></p>
+        </section>
+    </div>
+    <footer>
+        Bearer Token: <span id="token">{{ token }}</span>
+        <button onclick="copyToken()" class="btn btn-secondary btn-sm">Copy Token</button>
+    </footer>
+</body>
+</html>

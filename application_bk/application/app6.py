@@ -15,11 +15,6 @@ client = MongoClient(mongo_uri)
 db = client.postman01
 products = db.products02
 
-# In-memory token blacklist
-blacklisted_tokens = set()
-
-def token_is_blacklisted(token):
-    return token in blacklisted_tokens
 
 @app.route('/')
 def home():
@@ -30,9 +25,7 @@ def home():
 def dashboard():
     if not session.get('logged_in'):
         return redirect(url_for('login'))  # Redirect to login if not logged in
-    token = session.get('token')
-    return render_template('dashboard.html', token=token)  # Pass token to the template
-
+    return render_template('dashboard.html')  # Render the dashboard page
 
 @app.route('/products', methods=['GET'])
 def get_products():
@@ -44,7 +37,6 @@ def get_products():
         product['_id'] = str(product['_id'])
     total_count = products.count_documents({})
     return jsonify({"products": all_products, "total": total_count})
-
 
 @app.route('/products/<int:id>', methods=['GET'])
 def get_product(id):
@@ -63,9 +55,6 @@ def add_product():
         return jsonify({"error": "Authorization header missing or invalid"}), 401
 
     token = auth_header.split(' ')[1]
-    if token_is_blacklisted(token):
-        return jsonify({"error": "Token is blacklisted"}), 401
-
     try:
         jwt.decode(token, jwt_secret, algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
@@ -95,21 +84,6 @@ def update_product(id):
 
 @app.route('/products/<int:id>', methods=['DELETE'])
 def delete_product(id):
-    auth_header = request.headers.get('Authorization')
-    if not auth_header or not auth_header.startswith('Bearer '):
-        return jsonify({"error": "Authorization header missing or invalid"}), 401
-
-    token = auth_header.split(' ')[1]
-    if token_is_blacklisted(token):
-        return jsonify({"error": "Token is blacklisted"}), 401
-
-    try:
-        jwt.decode(token, jwt_secret, algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        return jsonify({"error": "Token expired"}), 401
-    except jwt.InvalidTokenError:
-        return jsonify({"error": "Invalid token"}), 401
-
     result = products.delete_one({'id': id})
     if result.deleted_count:
         return jsonify({"id": id})
@@ -142,52 +116,27 @@ def login():
                 'user': username,
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
             }, jwt_secret, algorithm='HS256')
-            session['logged_in'] = True
-            session['token'] = token  # Store the token in the session
-            return jsonify({"token": token})  # Return the token in the response
+            return jsonify({"token": token})
         else:
-            return jsonify({"error": "Invalid credentials"}), 401
+            return 'Invalid credentials', 401
     return render_template('login.html')  # Display the login page for GET requests
+
 
 @app.route('/logout')
 def logout():
-    token = session.pop('token', None)
     session.pop('logged_in', None)
-    if token:
-        blacklisted_tokens.add(token)
     return redirect(url_for('home'))
 
-@app.route('/api/check_token', methods=['GET'])
-def check_token():
-    auth_header = request.headers.get('Authorization')
-    if not auth_header or not auth_header.startswith('Bearer '):
-        return jsonify({"error": "Authorization header missing or invalid"}), 401
 
-    token = auth_header.split(' ')[1]
-    if token_is_blacklisted(token):
-        return jsonify({"error": "Token is blacklisted"}), 401
+@app.route('/test-tokens', methods=['GET', 'POST'])
+def test_tokens():
+    if request.method == 'POST':
+        bearer_token = request.form.get('bearer_token')
+        access_token = request.form.get('access_token')
+        # For demo purposes, we'll just return the tokens
+        return jsonify({"bearer_token": bearer_token, "access_token": access_token})
+    return render_template('test_tokens.html')
 
-    try:
-        jwt.decode(token, jwt_secret, algorithms=['HS256'])
-        return jsonify({"message": "Token is valid"})
-    except jwt.ExpiredSignatureError:
-        return jsonify({"error": "Token expired"}), 401
-    except jwt.InvalidTokenError:
-        return jsonify({"error": "Invalid token"}), 401
-
-@app.route('/add_product')
-def add_product_page():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))  # Redirect to login if not logged in
-    token = session.get('token')
-    return render_template('add_new_product.html', token=token)  # Pass token to the template
-
-@app.route('/delete_product')
-def delete_product_page():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))  # Redirect to login if not logged in
-    token = session.get('token')
-    return render_template('delete_product.html', token=token)  # Pass token to the template
 
 if __name__ == '__main__':
     app.run(debug=True)

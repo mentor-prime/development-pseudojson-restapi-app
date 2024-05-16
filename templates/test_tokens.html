@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            max-width: 500px;
+            width: 100%;
+        }
+        h2 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Add Product</h2>
+        <form id="add-product-form">
+            <label for="bearer_token">Bearer Token:</label>
+            <input type="text" id="bearer_token" name="bearer_token" required>
+            <label for="product_id">Product ID:</label>
+            <input type="text" id="product_id" name="product_id" required>
+            <label for="product_title">Product Title:</label>
+            <input type="text" id="product_title" name="product_title" required>
+            <label for="product_price">Product Price:</label>
+            <input type="text" id="product_price" name="product_price" required>
+            <label for="product_category">Product Category:</label>
+            <input type="text" id="product_category" name="product_category" required>
+            <label for="product_description">Product Description:</label>
+            <textarea id="product_description" name="product_description" required></textarea>
+            <label for="product_stock">Product Stock:</label>
+            <input type="text" id="product_stock" name="product_stock" required>
+            <label for="product_image">Product Image URL:</label>
+            <input type="text" id="product_image" name="product_image" required>
+            <button type="button" onclick="addProduct()">Add Product</button>
+        </form>
+        <p id="response"></p>
+    </div>
+    <script>
+        function addProduct() {
+            const token = document.getElementById('bearer_token').value.trim();
+            if (!token) {
+                alert("Bearer token is required");
+                return;
+            }
+
+            const product = {
+                id: document.getElementById('product_id').value.trim(),
+                title: document.getElementById('product_title').value.trim(),
+                price: document.getElementById('product_price').value.trim(),
+                category: document.getElementById('product_category').value.trim(),
+                description: document.getElementById('product_description').value.trim(),
+                stock: document.getElementById('product_stock').value.trim(),
+                image: document.getElementById('product_image').value.trim()
+            };
+
+            fetch('/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(product)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('response').innerText = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('response').innerText = 'Error: ' + error.message;
+            });
+        }
+    </script>
+</body>
+</html>
