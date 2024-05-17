@@ -175,12 +175,13 @@ def check_token():
     except jwt.InvalidTokenError:
         return jsonify({"error": "Invalid token"}), 401
 
-@app.route('/add_product')
+# @app.route('/add_product')
+@app.route('/manage_products')
 def add_product_page():
     if not session.get('logged_in'):
         return redirect(url_for('login'))  # Redirect to login if not logged in
     token = session.get('token')
-    return render_template('add_new_product.html', token=token)  # Pass token to the template
+    return render_template('manage_products.html', token=token)  # Pass token to the template
 
 @app.route('/delete_product')
 def delete_product_page():
