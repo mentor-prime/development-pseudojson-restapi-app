@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>PseudoJSON</title>
+      <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+   </head>
+   <body>
+      <header>
+         <div class="header-title">
+            <h2>Pseudo{JSON}</h2>
+         </div>
+         <div class="header-nav">
+            <a href="">GitHub</a>
+            <a href="/docs/products/">Docs</a>
+            <a href="/login">Login</a>
+         </div>
+      </header>
+      <div class="content">
+         <h3>Got tired of fake dataset?</h3>
+         <p>PseudoJson provides a variety of REST endpoints that deliver JSON data, allowing you to focus on front-end development using your preferred frameworks and libraries without the need to develop a backend.</p>
+         <h4><br>Example Code</h4>
+         <pre><code>fetch('https://pseudojson.com/products/1')
+.then(res =&gt; res.json())
+.then(json =&gt; console.log(json))</code></pre>
+         <pre><code>{
+  "message": "Hello, World!"
+}</code></pre>
+         <h4><br>Resources</h4>
+         <p>PseudoJson comes with different sets of common resources:</p>
+         <div class="note">
+            <p>Products endpoints:</p>
+            <table>
+               <thead>
+                  <tr>
+                     <th>Method</th>
+                     <th>Endpoint</th>
+                     <th>Description</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr>
+                     <td>GET</td>
+                     <td><a href="/products">/products</a></td>
+                     <td>Returns a list of all products.</td>
+                  </tr>
+                  <tr>
+                     <td>GET</td>
+                     <td><a href="/products/1">/products/1</a></td>
+                     <td>Fetch product with id 1.</td>
+                  </tr>
+                  <tr>
+                     <td>GET</td>
+                     <td><a href="/products/2">/products/2</a></td>
+                     <td>Fetch product with id 2.</td>
+                  </tr>
+                  <tr>
+                     <td>GET</td>
+                     <td><a href="/products/category/smartphones">/products/category/smartphones</a></td>
+                     <td>Fetch products which has the category smartphones.</td>
+                  </tr>
+                  <tr>
+                     <td>POST</td>
+                     <td><a href="/products">/products</a></td>
+                     <td>Adds a new product to the database. Requires a JSON payload with product details.<br>Body:</td>
+                  </tr>
+               </tbody>
+            </table>
+            <pre><code>{
+    "brand": "Apple",
+    "category": "smartphones",
+    "description": "An apple mobile which is nothing like apple",
+    "discountPercentage": 12.96,
+    "id": 31,
+    "images": [
+        "https://unsplash.com/photos/a-close-up-of-a-person-holding-a-cell-phone-KX_7S9bXYjY"
+    ],
+    "price": 1449,
+    "rating": 12.69,
+    "stock": 188,
+    "thumbnail": "https://unsplash.com/photos/a-close-up-of-a-person-holding-a-cell-phone-KX_7S9bXYjY",
+    "title": "iPhone 15 pro"
+}</code></pre>
+            <p>Headers:</p>
+            <pre>Content-Type: application/json</pre>
+            <p><b>Response Examples:</b></p>
+            <p>Success - 201 Created:</p>
+            <pre><code>{
+  "_id": "mongodb_generated_id",
+  "id": "unique_product_id",
+  "title": "Product Title",
+  "price": 100,
+  "category": "Category Name",
+  // Additional fields...
+}</code></pre>
+            <p>Error - 400 Bad Request (Missing ID):</p>
+            <pre><code>{
+  "error": "ID is required"
+}</code></pre>
+            <p>Error - 409 Conflict (ID already exists):</p>
+            <pre><code>{
+  "error": "Product with this ID already exists"
+}</code></pre>
+            <p>**Note:** by default you will get 30 results and the total count, you can pass "skip" & "limit" query string to get more results. For example: <a href="/products?skip=5&limit=10">/products?skip=5&limit=10</a></p>
+         </div>
+      </div>
+      <footer>
+         <p class="version-info enabled">Version 1.0.0</p>
+      </footer>
+   </body>
+</html>

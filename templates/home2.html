@@ -13,22 +13,11 @@
          body {
          font-family: 'Roboto', sans-serif;
          line-height: 1.6;
-         background-color: #f0f2f7;
+         background-color: #121212;
+         color: #e0e0e0;
          }
-         <!--    header {-->
-         <!--      background-color: #F1D3F3;-->
-         <!--      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);-->
-         <!--      padding: 0px 0;-->
-         <!--      display: flex;-->
-         <!--      justify-content: space-between;-->
-         <!--      align-items: center;-->
-         <!--      position: fixed;-->
-         <!--      width: 100%;-->
-         <!--      top: 0;-->
-         <!--      z-index: 1000;-->
-         <!--    }-->
          header {
-         background-image: linear-gradient(135deg, #6ec1e4, #6658d3); /* Applying the gradient */
+         background-image: linear-gradient(135deg, #333, #111);
          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
          padding: 0px 0;
          display: flex;
@@ -46,7 +35,7 @@
          }
          .header-title h2 {
          font-size: 2.5rem;
-         color: #333;
+         color: #e0e0e0;
          }
          .header-nav {
          display: flex;
@@ -54,7 +43,7 @@
          padding-right: 20px;
          }
          .header-nav a {
-         color: #98A4AF;
+         color: #b0bec5;
          text-decoration: none;
          margin-left: 20px;
          font-size: 1rem;
@@ -64,24 +53,23 @@
          transition: all 0.2s ease-in-out;
          }
          .header-nav a:hover {
-         border-color: #007bff;
-         background-color: #98A4AF;
+         border-color: #1e88e5;
+         background-color: #37474f;
          }
          .content {
          max-width: 1200px;
-         margin: 100px auto 20px auto; /* adjusted top margin to account for fixed header */
+         margin: 100px auto 20px auto;
          padding: 20px;
-         background-color: #ffffff;
+         background-color: #212121;
          box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
          border-radius: 10px;
          }
-         h2 {
-         font-size: 2rem;
-         color: #333;
+         h2, h3, h4 {
+         color: #e0e0e0;
          margin-top: 1rem;
          }
          pre {
-         background-color: #CBD7E2;
+         background-color: #263238;
          padding: 15px;
          border-radius: 10px;
          margin-top: 1rem;
@@ -91,28 +79,29 @@
          font-family: 'Courier New', Courier, monospace;
          white-space: pre-wrap;
          font-size: 0.9rem;
+         color: #f1f8e9;
          }
          table {
          width: 100%;
          border-collapse: collapse;
-         border: 2px solid #889097;
+         border: 2px solid #455a64;
          }
          th, td {
          padding: 0.25rem;
-         border: 1px solid #dee2e6;
+         border: 1px solid #607d8b;
          }
          th {
-         background-color: #f8f9fa;
+         background-color: #37474f;
          font-weight: 500;
          }
          tr:nth-child(even) {
-         background-color: #f2f2f2;
+         background-color: #263238;
          }
          tr:hover {
-         background-color: #e9ecef;
+         background-color: #37474f;
          }
          .note {
-         background-color: #e9ecef;
+         background-color: #37474f;
          padding: 1rem;
          border-radius: 10px;
          margin-top: 2rem;
@@ -124,10 +113,29 @@
          margin-right: 0.5rem;
          }
          .endpoint {
-         background: #f9f9f9;
-         border-left: 5px solid #5cb85c;
+         background: #212121;
+         border-left: 5px solid #4caf50;
          padding: 10px 20px;
          margin-bottom: 10px;
+         }
+         footer {
+         background-color: #37474f;
+         padding: 10px 0;
+         text-align: center;
+         position: fixed;
+         width: 100%;
+         bottom: 0;
+         box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+         }
+         .version-info {
+         color: #b0bec5;
+         font-size: 0.9rem;
+         }
+         .version-info.enabled {
+         display: block;
+         }
+         .version-info.disabled {
+         display: none;
          }
       </style>
    </head>
@@ -152,7 +160,6 @@
          <pre><code>{
   "message": "Hello, World!"
 }</code></pre>
-         <!--    <p>Yay! 😍</p>-->
          <h4><br>Resources</h4>
          <p>PseudoJson comes with different sets of common resources:</p>
          <div class="note">
@@ -178,7 +185,7 @@
                   <div class="endpoint">
                      <h4>POST <a href="/products">/products</a></h4>
                      <p>Adds a new product to the database. Requires a JSON payload with product details.</p>
-                    <p>Body:</p>
+                     <p>Body:</p>
                      <pre><code>{
     "brand": "Apple",
     "category": "smartphones",
@@ -219,7 +226,9 @@
             </table>
             <p>**Note:** by default you will get 30 results and the total count, you can pass "skip" & "limit" query string to get more results. For example: <a href="/products?skip=5&limit=10">/products?skip=5&limit=10</a></p>
          </div>
-
       </div>
+      <footer>
+         <p class="version-info enabled">Version 1.0.0</p>
+      </footer>
    </body>
 </html>

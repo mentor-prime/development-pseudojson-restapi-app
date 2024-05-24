@@ -7,44 +7,40 @@ import datetime
 
 app = Flask(__name__)
 app.secret_key = 'echo1234567890'
-jwt_secret = 'your_jwt_secret_key'  # Use a secure key in a real application
+jwt_secret = 'your_jwt_secret_key'
 
-# MongoDB setup
 mongo_uri = "mongodb+srv://admin:admin@cluster0.6px5a.mongodb.net/"
 client = MongoClient(mongo_uri)
 db = client.postman01
 products = db.products02
 
-# In-memory token blacklist
 blacklisted_tokens = set()
 
 def token_is_blacklisted(token):
     return token in blacklisted_tokens
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def home():
-    return render_template('index9.html')
-
+    # return render_template('index.html')
+    return render_template('home.html')
 
 @app.route('/dashboard')
 def dashboard():
     if not session.get('logged_in'):
-        return redirect(url_for('login'))  # Redirect to login if not logged in
+        return redirect(url_for('login'))
     token = session.get('token')
-    return render_template('dashboard.html', token=token)  # Pass token to the template
-
+    return render_template('dashboard.html', token=token)
 
 @app.route('/products', methods=['GET'])
 def get_products():
-    skip = int(request.args.get('skip', 0))  # Default to 0 if not provided
-    limit = int(request.args.get('limit', 100))  # Default to 30 if not provided
+    skip = int(request.args.get('skip', 0))
+    limit = int(request.args.get('limit', 100))
 
-    all_products = list(products.find().sort("id", 1).skip(skip).limit(limit))  # Sort by 'id' in ascending order
+    all_products = list(products.find().sort("id", 1).skip(skip).limit(limit))
     for product in all_products:
         product['_id'] = str(product['_id'])
     total_count = products.count_documents({})
     return jsonify({"products": all_products, "total": total_count})
-
 
 @app.route('/products/<int:id>', methods=['GET'])
 def get_product(id):
@@ -54,7 +50,6 @@ def get_product(id):
         return jsonify(product)
     else:
         return jsonify({"error": "Product not found"}), 404
-
 
 @app.route('/products', methods=['POST'])
 def add_product():
@@ -82,7 +77,6 @@ def add_product():
     product['_id'] = str(result.inserted_id)
     return jsonify(product), 201
 
-
 @app.route('/products/<int:id>', methods=['PUT'])
 def update_product(id):
     update_data = request.json
@@ -91,7 +85,6 @@ def update_product(id):
         return jsonify({"id": id})
     else:
         return jsonify({"error": "Product not updated"}), 404
-
 
 @app.route('/products/<int:id>', methods=['DELETE'])
 def delete_product(id):
@@ -116,7 +109,6 @@ def delete_product(id):
     else:
         return jsonify({"error": "Product not found"}), 404
 
-
 @app.route('/products/category/<category_name>', methods=['GET'])
 def get_products_by_category(category_name):
     skip = int(request.args.get('skip', 0))
@@ -131,7 +123,6 @@ def get_products_by_category(category_name):
     total_count = products.count_documents({'category': {'$regex': category_name, '$options': 'i'}})
     return jsonify({'products': result, 'total': total_count, 'category': category_name})
 
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -143,11 +134,11 @@ def login():
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
             }, jwt_secret, algorithm='HS256')
             session['logged_in'] = True
-            session['token'] = token  # Store the token in the session
-            return jsonify({"token": token})  # Return the token in the response
+            session['token'] = token
+            return jsonify({"token": token})
         else:
             return jsonify({"error": "Invalid credentials"}), 401
-    return render_template('login.html')  # Display the login page for GET requests
+    return render_template('login.html')
 
 @app.route('/logout')
 def logout():
@@ -175,20 +166,19 @@ def check_token():
     except jwt.InvalidTokenError:
         return jsonify({"error": "Invalid token"}), 401
 
-# @app.route('/add_product')
 @app.route('/manage_products')
 def add_product_page():
     if not session.get('logged_in'):
-        return redirect(url_for('login'))  # Redirect to login if not logged in
+        return redirect(url_for('login'))
     token = session.get('token')
-    return render_template('manage_products.html', token=token)  # Pass token to the template
+    return render_template('manage_products.html', token=token)
 
 @app.route('/delete_product')
 def delete_product_page():
     if not session.get('logged_in'):
-        return redirect(url_for('login'))  # Redirect to login if not logged in
+        return redirect(url_for('login'))
     token = session.get('token')
-    return render_template('delete_product.html', token=token)  # Pass token to the template
+    return render_template('delete_product.html', token=token)
 
 if __name__ == '__main__':
     app.run(debug=True)

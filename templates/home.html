@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>PseudoJSON</title>
+      <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+   </head>
+   <body>
+      <header>
+         <div class="header-title">
+            <h2>Pseudo{JSON}</h2>
+         </div>
+         <div class="header-nav">
+            <a href="">GitHub</a>
+            <a href="/docs/products/">Docs</a>
+            <a href="/login">Login</a>
+         </div>
+      </header>
+      <div class="content">
+         <h3>Got tired of fake dataset?</h3>
+         <p>PseudoJson provides a variety of REST endpoints that deliver JSON data, allowing you to focus on front-end development using your preferred frameworks and libraries without the need to develop a backend.</p>
+         <h4><br>Example Code</h4>
+         <pre><code>fetch('https://pseudojson.com/products/1')
+.then(res =&gt; res.json())
+.then(json =&gt; console.log(json))</code></pre>
+         <pre><code>{
+  "message": "Hello, World!"
+}</code></pre>
+         {% include 'resources.html' %}
+      </div>
+      <footer>
+         <p class="version-info enabled">PseudoJson v1.0.0 - Hosted with Heroku</p>
+      </footer>
+   </body>
+</html>
