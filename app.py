@@ -1,18 +1,46 @@
+# from flask import Flask, jsonify, request, render_template, session, redirect, url_for
+# from pymongo import MongoClient
+# from bson.objectid import ObjectId
+# import os
+# import jwt
+# import datetime
+
+# app = Flask(__name__)
+# app.secret_key = 'echo1234567890'
+# jwt_secret = 'your_jwt_secret_key'
+# mongo_uri = "mongodb+srv://amadbm24_db_user:<db_password>@pseudojson.jr5xoeh.mongodb.net/?appName=pseudojson"
+
+# client = MongoClient(mongo_uri)
+
+
 from flask import Flask, jsonify, request, render_template, session, redirect, url_for
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 import os
 import jwt
 import datetime
+from dotenv import load_dotenv
+
+load_dotenv()  # Loads variables from .env into environment
 
 app = Flask(__name__)
-app.secret_key = 'echo1234567890'
-jwt_secret = 'your_jwt_secret_key'
 
-mongo_uri = "mongodb+srv://admin:admin@cluster0.6px5a.mongodb.net/"
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "fallback_dev_secret")
+jwt_secret = os.getenv("JWT_SECRET", "fallback_jwt_secret")
+
+mongo_uri = os.getenv("MONGO_URI")
+if not mongo_uri:
+    raise RuntimeError("MONGO_URI is not set. Create a .env file or export MONGO_URI.")
+
 client = MongoClient(mongo_uri)
-db = client.postman01
-products = db.products02
+
+
+
+# Database
+db = client.pseudojson
+
+# Collection
+products = db.products
 
 blacklisted_tokens = set()
 
