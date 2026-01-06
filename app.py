@@ -1,18 +1,3 @@
-# from flask import Flask, jsonify, request, render_template, session, redirect, url_for
-# from pymongo import MongoClient
-# from bson.objectid import ObjectId
-# import os
-# import jwt
-# import datetime
-
-# app = Flask(__name__)
-# app.secret_key = 'echo1234567890'
-# jwt_secret = 'your_jwt_secret_key'
-# mongo_uri = "mongodb+srv://amadbm24_db_user:<db_password>@pseudojson.jr5xoeh.mongodb.net/?appName=pseudojson"
-
-# client = MongoClient(mongo_uri)
-
-
 from flask import Flask, jsonify, request, render_template, session, redirect, url_for
 from pymongo import MongoClient
 from bson.objectid import ObjectId
